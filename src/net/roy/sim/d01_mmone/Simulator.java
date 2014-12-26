@@ -1,4 +1,4 @@
-package net.roy.sim.execise;
+package net.roy.sim.d01_mmone;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 
