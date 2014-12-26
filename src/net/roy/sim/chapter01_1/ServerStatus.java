@@ -1,4 +1,4 @@
-package net.roy.sim.d01_mmone;
+package net.roy.sim.chapter01_1;
 
 /**
  * Created by Roy on 2014/12/26.

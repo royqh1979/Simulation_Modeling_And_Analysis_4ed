@@ -1,4 +1,4 @@
-package net.roy.sim.d01_mmone;
+package net.roy.sim.chapter01_2;
 
 /**
  * Created by Roy on 2014/12/26.
@@ -6,5 +6,6 @@ package net.roy.sim.d01_mmone;
 public enum EventType {
     CustomerArrival,
     CustomerDepart,
+    SimulationEnd,
     Unknown
 }
