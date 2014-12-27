@@ -166,7 +166,7 @@ public class Simulator {
         double avgShorageCost=simulator.integralShortage * simulator.shortageCost / simulator.numOfMonths;
         System.out.println(String.format("(%3d,%3d)%15.2f%15.2f%15.2f%15.2f)",
                 small,big,avgOrderingCost+avgHoldingCost+avgShorageCost,
-                avgOrderingCost,avgHoldingCost,avgShorageCost);
+                avgOrderingCost,avgHoldingCost,avgShorageCost));
     }
 
     private static void reportHeader(Simulator simulator) {
