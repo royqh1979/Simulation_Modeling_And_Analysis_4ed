@@ -1,9 +1,10 @@
-package net.roy.sim.chapter01.e03;
+package net.roy.sim.chapter01.e04;
 
 import net.roy.sim.distribution.ExponentialVariable;
 import net.roy.sim.distribution.IContiuousRandomVariable;
 import net.roy.sim.distribution.IDiscreteRandomVariable;
 import net.roy.sim.distribution.UniformVariable;
+import net.roy.sim.tools.EventDispatcher;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.Map;
 /**
  * Simulation of an inventory system
  * Simulation modeling and analysis, 4ed, Chapter 1.5.3
+ * using simulation tools
  * Created by Roy on 2014/12/27.
  */
 public class Simulator {
@@ -27,9 +29,7 @@ public class Simulator {
 
     /* System states */
     private int inventoryLevel;
-    private double simTime;
-    private double lastEventTime;
-    private Map<EventType,Double> nextEventTimes=new HashMap<>();
+    private EventDispatcher<EventType,Object> eventDispatcher=new EventDispatcher<>();
     private int orderAmount;
 
     /* statistics */
@@ -80,9 +80,10 @@ public class Simulator {
     private void simulate(int small, int big) {
         intialize();
         while (true) {
-            EventType nextEvent=timing();
+            eventDispatcher.timing();
+            //System.out.println(eventDispatcher.getTime()+" "+eventDispatcher.getCurrentEventType());
             updateStatistics();
-            switch (nextEvent) {
+            switch (eventDispatcher.getCurrentEventType()) {
                 case OrderArrival:
                     orderArrival();
                     break;
@@ -96,7 +97,7 @@ public class Simulator {
                     endSimulation();
                     break;
             }
-            if (nextEvent==EventType.EndSimulation)
+            if (eventDispatcher.getCurrentEventType()== EventType.EndSimulation)
                 break;
         }
     }
@@ -109,29 +110,27 @@ public class Simulator {
         if (inventoryLevel<small) {
             orderAmount=big-inventoryLevel;
             totalOrderingCost+=setupCost+orderAmount*incrementalCost;
-            nextEventTimes.put(EventType.OrderArrival,
-                    simTime+deliveryLag.nextValue());
+            eventDispatcher.schedule(EventType.OrderArrival,
+                    eventDispatcher.getTime() + deliveryLag.nextValue());
         }
-        nextEventTimes.put(EventType.Evaluate,
-                simTime+1.0);
+        eventDispatcher.schedule(EventType.Evaluate,
+                eventDispatcher.getTime() + 1.0);
     }
 
     private void demand() {
         int demandSize=demandQuantity.nextValue();
         inventoryLevel -= demandSize;
-        nextEventTimes.put(EventType.Demand,
-                simTime+demandTime.nextValue());
+        eventDispatcher.schedule(EventType.Demand,
+                eventDispatcher.getTime() + demandTime.nextValue());
     }
 
     private void orderArrival() {
         inventoryLevel+=orderAmount;
-        nextEventTimes.put(EventType.OrderArrival,
-                Double.MAX_VALUE);
     }
 
     private void updateStatistics() {
-        double timeSinceLastEvent = simTime - lastEventTime;
-        lastEventTime = simTime;
+        double timeSinceLastEvent =
+                eventDispatcher.getTime()-eventDispatcher.getLastEventTime();
 
         if (inventoryLevel<0) {
             integralShortage += timeSinceLastEvent * (-inventoryLevel);
@@ -140,36 +139,22 @@ public class Simulator {
         }
     }
 
-    private EventType timing() {
-        double minNextEventTime=Double.MAX_VALUE;
-        EventType nextEventType=EventType.Unknown;
-        for (EventType e:nextEventTimes.keySet()) {
-            double t=nextEventTimes.get(e);
-            if (t<minNextEventTime) {
-                minNextEventTime=t;
-                nextEventType=e;
-            }
-        }
-        if (nextEventType==EventType.Unknown) {
-            throw new RuntimeException("Unknow EventType!");
-        }
-        simTime=minNextEventTime;
-        return nextEventType;
-    }
+
 
     private void intialize() {
         inventoryLevel=initialInventoryLevel;
-        simTime=0;
-        lastEventTime=0;
+        eventDispatcher.reset();
 
         totalOrderingCost=0;
         integralHolding=0;
         integralShortage=0;
 
-        nextEventTimes.put(EventType.OrderArrival,Double.MAX_VALUE);
-        nextEventTimes.put(EventType.Demand,simTime+demandTime.nextValue());
-        nextEventTimes.put(EventType.EndSimulation, numOfMonths+0.0);
-        nextEventTimes.put(EventType.Evaluate,0.0);
+        eventDispatcher.schedule(EventType.Demand,
+                eventDispatcher.getTime() + demandTime.nextValue());
+        eventDispatcher.schedule(EventType.Evaluate,
+                eventDispatcher.getTime() + 0);
+        eventDispatcher.schedule(EventType.EndSimulation,
+                numOfMonths);
     }
 
     private static void reportSimulate(Simulator simulator, int small, int big) {

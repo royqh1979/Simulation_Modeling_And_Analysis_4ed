@@ -10,7 +10,7 @@ public class UniformVariable implements IContiuousRandomVariable {
     private double min;
     private RandomDataGenerator randomDataGenerator=new RandomDataGenerator();
 
-    public UniformVariable(double max, double min) {
+    public UniformVariable(double min, double max) {
         this.max = max;
         this.min = min;
     }

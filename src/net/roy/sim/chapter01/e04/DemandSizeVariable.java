@@ -1,4 +1,4 @@
-package net.roy.sim.chapter01.e03;
+package net.roy.sim.chapter01.e04;
 
 import net.roy.sim.distribution.IDiscreteRandomVariable;
 import org.apache.commons.math3.random.RandomDataGenerator;
