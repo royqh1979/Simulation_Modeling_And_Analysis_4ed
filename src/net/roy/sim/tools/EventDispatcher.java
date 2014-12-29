@@ -1,8 +1,11 @@
 package net.roy.sim.tools;
 
+import javafx.collections.ObservableArray;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.function.Function;
 
 /**
  * A class for dispatch events
@@ -22,7 +25,7 @@ public class EventDispatcher<EventType,DataType> {
         nextEventTimes.clear();
     }
     public void schedule(EventType eventType, double scheduleTime) {
-         schedule(eventType,scheduleTime,null);
+         schedule(eventType, scheduleTime, null);
     }
     public void schedule(EventType eventType, double scheduleTime, DataType data) {
         if (scheduleTime<time) {
