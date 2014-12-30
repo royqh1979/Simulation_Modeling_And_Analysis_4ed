@@ -6,9 +6,6 @@ import net.roy.sim.distribution.IDiscreteRandomVariable;
 import net.roy.sim.distribution.UniformVariable;
 import net.roy.sim.tools.EventDispatcher;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Simulation of an inventory system
  * Simulation modeling and analysis, 4ed, Chapter 1.5.3
@@ -110,17 +107,17 @@ public class Simulator {
         if (inventoryLevel<small) {
             orderAmount=big-inventoryLevel;
             totalOrderingCost+=setupCost+orderAmount*incrementalCost;
-            eventDispatcher.schedule(EventType.OrderArrival,
+            eventDispatcher.scheduleAbsoluteTime(EventType.OrderArrival,
                     eventDispatcher.getTime() + deliveryLag.nextValue());
         }
-        eventDispatcher.schedule(EventType.Evaluate,
+        eventDispatcher.scheduleAbsoluteTime(EventType.Evaluate,
                 eventDispatcher.getTime() + 1.0);
     }
 
     private void demand() {
         int demandSize=demandQuantity.nextValue();
         inventoryLevel -= demandSize;
-        eventDispatcher.schedule(EventType.Demand,
+        eventDispatcher.scheduleAbsoluteTime(EventType.Demand,
                 eventDispatcher.getTime() + demandTime.nextValue());
     }
 
@@ -149,11 +146,11 @@ public class Simulator {
         integralHolding=0;
         integralShortage=0;
 
-        eventDispatcher.schedule(EventType.Demand,
+        eventDispatcher.scheduleAbsoluteTime(EventType.Demand,
                 eventDispatcher.getTime() + demandTime.nextValue());
-        eventDispatcher.schedule(EventType.Evaluate,
+        eventDispatcher.scheduleAbsoluteTime(EventType.Evaluate,
                 eventDispatcher.getTime() + 0);
-        eventDispatcher.schedule(EventType.EndSimulation,
+        eventDispatcher.scheduleAbsoluteTime(EventType.EndSimulation,
                 numOfMonths);
     }
 
