@@ -65,7 +65,7 @@ public class EventDispatcher<EventType,DataType> {
      * @param timeOffset  how long from now the event will occure
      * @param data  data of the event
      */
-    public void schedulte(EventType eventType, double timeOffset, DataType data) {
+    public void schedule(EventType eventType, double timeOffset, DataType data) {
         scheduleAbsoluteTime(eventType, time+timeOffset,data);
     }
 

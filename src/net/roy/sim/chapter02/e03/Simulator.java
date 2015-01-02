@@ -125,18 +125,6 @@ public class Simulator {
 
     }
 
-    private class Job{
-        double arriveTime;
-        double serviceTime;
-        double remainingServiceTime;
-
-        public Job(double arriveTime, double serviceTime) {
-            this.arriveTime = arriveTime;
-            this.serviceTime = serviceTime;
-            this.remainingServiceTime = serviceTime;
-        }
-    }
-
     public static void main(String[] args) {
         Simulator simulator=new Simulator(25,0.8,0.1,0.015,10000);
 
