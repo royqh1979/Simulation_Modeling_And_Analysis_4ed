@@ -1,6 +1,7 @@
 package net.roy.sim.chapter02.e05;
 
 import com.sun.xml.internal.ws.api.pipe.FiberContextSwitchInterceptor;
+import net.roy.sim.distribution.ErlangVariable;
 import net.roy.sim.distribution.ExponentialVariable;
 
 import java.util.HashMap;
@@ -16,7 +17,7 @@ public class JobType {
     private Workstation startWorkstation;
     private Map<Workstation,Workstation> nextWorkstationTable;
     private Workstation endWorkstation;
-    private Map<Workstation,ExponentialVariable> workstationServiceTimes;
+    private Map<Workstation,ErlangVariable> workstationServiceTimes;
     private String name;
     private Workstation preWorkstation=null;
     public final static JobType Job1;
@@ -52,27 +53,27 @@ public class JobType {
 
     public void setStartWorkstation(Workstation workstation, double meanServiceTime) {
         startWorkstation=workstation;
-        ExponentialVariable st=new ExponentialVariable(meanServiceTime);
+        ErlangVariable st=new ErlangVariable(2,meanServiceTime);
         workstationServiceTimes.put(startWorkstation,st);
         preWorkstation=startWorkstation;
     }
 
     public void setEndWorkstation(Workstation workstation,double meanServiceTime) {
         endWorkstation=workstation;
-        ExponentialVariable st=new ExponentialVariable(meanServiceTime);
+        ErlangVariable st=new ErlangVariable(2,meanServiceTime);
         nextWorkstationTable.put(preWorkstation, workstation);
         workstationServiceTimes.put(endWorkstation,st);
         preWorkstation=null;
     }
 
     public void addWorkstation(Workstation workstation, double meanServiceTime) {
-        ExponentialVariable st=new ExponentialVariable(meanServiceTime);
+        ErlangVariable st=new ErlangVariable(2,meanServiceTime);
         nextWorkstationTable.put(preWorkstation,workstation);
         workstationServiceTimes.put(workstation,st);
         preWorkstation=workstation;
     }
 
-    public ExponentialVariable getServiceTime(Workstation workstation) {
+    public ErlangVariable getServiceTime(Workstation workstation) {
         return workstationServiceTimes.get(workstation);
     }
 
@@ -94,5 +95,20 @@ public class JobType {
 
     public boolean isEndWorkstation(Workstation workstation) {
         return endWorkstation==workstation;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb=new StringBuilder(name);
+        Workstation cws,nws;
+        sb.append(' ');
+        cws=startWorkstation;
+        sb.append(cws.getId()+"("+getServiceTime(cws).getMean()+") ");
+        while((nws=getNextWorkstation(cws))!=null) {
+            cws=nws;
+            sb.append(cws.getId()+"("+getServiceTime(cws).getMean()+") ");
+
+        }
+        return sb.toString();
     }
 }

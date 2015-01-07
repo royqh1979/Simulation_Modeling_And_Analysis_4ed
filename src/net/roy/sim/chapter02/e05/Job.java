@@ -8,6 +8,8 @@ public class Job {
     private double stationArriveTime;
     private double arriveTime;
     private Workstation currentWorkstation;
+    private Workstation.Machine currentMachine;
+    private double totalDelay=0;
 
     public Job(JobType jobType, double arriveTime) {
         this.jobType = jobType;
@@ -15,8 +17,25 @@ public class Job {
     }
 
     public void arriveStation(Workstation workstation,double time) {
+        this.currentMachine=null;
         this.currentWorkstation=workstation;
         this.stationArriveTime=time;
+    }
+
+    public void addDelay(double delay){
+        totalDelay+=delay;
+    }
+
+    public double getTotalDelay() {
+        return totalDelay;
+    }
+
+    public void process(Workstation.Machine machine){
+        this.currentMachine =machine;
+    }
+
+    public Workstation.Machine getCurrentMachine() {
+        return currentMachine;
     }
 
     public Workstation getCurrentWorkstation() {
@@ -34,4 +53,6 @@ public class Job {
     public double getArriveTime() {
         return arriveTime;
     }
+
+
 }

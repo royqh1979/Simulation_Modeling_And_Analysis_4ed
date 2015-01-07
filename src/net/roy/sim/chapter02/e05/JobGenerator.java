@@ -20,7 +20,7 @@ public class JobGenerator {
 
     public void addJob(double prob, JobType jobType){
         accumProb+=prob;
-        jobs.add(new JobProbability(prob,jobType));
+        jobs.add(new JobProbability(accumProb,jobType));
     }
 
     public JobType nextJobType() {
@@ -40,5 +40,14 @@ public class JobGenerator {
             this.probability = probability;
             this.jobType = jobType;
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb=new StringBuilder();
+        jobs.stream().forEach(
+                jp->sb.append(jp.probability+" "+jp.jobType.getName()+" ")
+        );
+        return sb.toString();
     }
 }
